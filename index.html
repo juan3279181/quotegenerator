@@ -1,61 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Random Quote Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote Generator</title>
 
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
+body {
+  background:#111;
+  color:#fff;
+  font-family:Arial, sans-serif;
+  margin:0;
+  text-align:center;
+}
 
-  .container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-  }
+.container {
+  max-width:650px;
+  margin:auto;
+  padding:20px;
+}
 
-  h1 {
-    margin-top: 20px;
-    font-size: 30px;
-  }
+h1 {
+  font-size:28px;
+  margin-bottom:10px;
+}
 
-  select, button {
-    background: #222;
-    color: #fff;
-    padding: 12px;
-    width: 100%;
-    font-size: 18px;
-    border-radius: 10px;
-    margin-top: 15px;
-    border: none;
-  }
+select, button {
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  font-size:18px;
+  border-radius:10px;
+  border:none;
+}
 
-  button {
-    background: #ffca28;
-    color: #000;
-    cursor: pointer;
-  }
+select {
+  background:#222;
+  color:#fff;
+}
 
-  button:hover {
-    background: #ffb300;
-  }
+button {
+  background:#ffca28;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-  .quote-box {
-    background: #222;
-    padding: 24px;
-    border-radius: 12px;
-    margin-top: 25px;
-    min-height: 120px;
-    font-size: 20px;
-    line-height: 1.4;
-  }
+button:hover {
+  background:#ffb300;
+}
+
+.quote-box {
+  background:#1f1f1f;
+  padding:25px;
+  border-radius:12px;
+  margin-top:25px;
+  min-height:120px;
+  font-size:20px;
+}
+
+.lock-box {
+  display:none;
+  margin-top:20px;
+  background:#222;
+  padding:15px;
+  border-radius:12px;
+}
+
+.banner-holder {
+  margin-top:25px;
+}
 </style>
 </head>
 
@@ -73,17 +87,33 @@
     <option value="confidence">Confidence</option>
   </select>
 
-  <button onclick="nextQuote()">Next Quote</button>
+  <button onclick="handleQuote()">Next Quote</button>
 
   <div class="quote-box" id="quoteBox">
-    Click “Next Quote” to begin
+    Tap "Next Quote" to begin
+  </div>
+
+  <!-- Reward Lock -->
+  <div class="lock-box" id="lockBox">
+    <p>🔒 Quotes locked</p>
+    <button onclick="showRewardAd()">Watch Ad to Unlock</button>
+  </div>
+
+  <!-- Banner Ad -->
+  <div class="banner-holder">
+    <script>
+      // AP Creator banner call
+      if (typeof showBannerAd === "function") {
+        showBannerAd();
+      }
+    </script>
   </div>
 </div>
 
 <script>
-/* --------------------------
+/* -------------------------
    QUOTES DATA
---------------------------- */
+-------------------------- */
 const QUOTES = {
   motivation: [],
   love: [],
@@ -105,29 +135,64 @@ const bases = [
   "Consistency beats talent"
 ];
 
-// 200 per category
-Object.keys(QUOTES).forEach(category => {
+Object.keys(QUOTES).forEach(cat => {
   for (let i = 1; i <= 200; i++) {
     const base = bases[Math.floor(Math.random() * bases.length)];
-    QUOTES[category].push(`${base}. (${category.toUpperCase()} #${i})`);
+    QUOTES[cat].push(`${base}. (${cat.toUpperCase()} #${i})`);
   }
 });
 
-/* --------------------------
-   NEXT QUOTE
---------------------------- */
-function nextQuote() {
-  const category = document.getElementById("category").value;
-  let list = [];
+/* -------------------------
+   AD REWARD SYSTEM
+-------------------------- */
+let quoteCount = 0;
+const FREE_LIMIT = 5;
 
-  if (category === "random") {
-    Object.values(QUOTES).forEach(arr => list = list.concat(arr));
-  } else {
-    list = QUOTES[category];
+function handleQuote() {
+  if (quoteCount >= FREE_LIMIT) {
+    document.getElementById("lockBox").style.display = "block";
+    return;
   }
 
-  const randomIndex = Math.floor(Math.random() * list.length);
-  document.getElementById("quoteBox").innerText = list[randomIndex];
+  nextQuote();
+  quoteCount++;
+
+  // Interstitial every 3 quotes
+  if (quoteCount % 3 === 0) {
+    if (typeof showInterstitialAd === "function") {
+      showInterstitialAd();
+    }
+  }
+}
+
+function nextQuote() {
+  const cat = document.getElementById("category").value;
+  let list = [];
+
+  if (cat === "random") {
+    Object.values(QUOTES).forEach(arr => list = list.concat(arr));
+  } else {
+    list = QUOTES[cat];
+  }
+
+  const q = list[Math.floor(Math.random() * list.length)];
+  document.getElementById("quoteBox").innerText = q;
+}
+
+/* -------------------------
+   REWARDED AD
+-------------------------- */
+function showRewardAd() {
+  if (typeof showRewardedAd === "function") {
+    showRewardedAd();
+  }
+}
+
+/* AP Creator calls this after reward */
+function onRewardEarned() {
+  quoteCount = 0;
+  document.getElementById("lockBox").style.display = "none";
+  alert("🎉 Reward unlocked! Enjoy more quotes.");
 }
 </script>
 
