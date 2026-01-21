@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="monetag" content="9367b5d2f72a865b2106d28b420e8ed7">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Quote Generator</title>
 
 <style>
+/* Base styles */
 body {
   font-family: Arial, sans-serif;
   background: #111;
@@ -16,26 +16,31 @@ body {
   text-align: center;
 }
 
+/* Container */
 .container {
   max-width: 600px;
   margin: auto;
   padding: 20px;
+  box-sizing: border-box;
 }
 
+/* Heading */
 h1 {
   margin-top: 20px;
-  font-size: 30px;
+  font-size: 2rem;
 }
 
+/* Select and button styling */
 select, button {
   background: #222;
   color: #fff;
   padding: 12px;
   width: 100%;
-  font-size: 18px;
+  font-size: 1.1rem;
   border-radius: 10px;
   margin-top: 15px;
   border: none;
+  box-sizing: border-box;
 }
 
 button {
@@ -43,20 +48,41 @@ button {
   color: #000;
   cursor: pointer;
   font-weight: bold;
+  transition: background 0.2s;
 }
 
 button:hover {
   background: #ffb300;
 }
 
+/* Quote box */
 .quote-box {
   background: #222;
-  padding: 24px;
+  padding: 20px;
   border-radius: 12px;
   margin-top: 25px;
   min-height: 120px;
-  font-size: 20px;
+  font-size: 1.2rem;
   line-height: 1.4;
+  word-wrap: break-word;
+}
+
+/* Mobile optimization */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+  
+  select, button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .quote-box {
+    font-size: 1rem;
+    padding: 16px;
+    min-height: 100px;
+  }
 }
 </style>
 </head>
@@ -75,7 +101,7 @@ button:hover {
     <option value="confidence">Confidence</option>
   </select>
 
-  <button onclick="nextQuote()">Next Quote</button>
+  <button id="nextBtn">Next Quote</button>
 
   <div class="quote-box" id="quoteBox">
     Click “Next Quote” to begin
@@ -124,6 +150,31 @@ function nextQuote() {
   const randomIndex = Math.floor(Math.random() * list.length);
   document.getElementById("quoteBox").innerText = list[randomIndex];
 }
+
+/* Monetag OnClick Ad (Every 3 Clicks Predictable) */
+document.addEventListener("DOMContentLoaded", () => {
+  // Inject Monetag script
+  (function(s){
+    s.dataset.zone='10498787';
+    s.src='https://al5sm.com/tag.min.js';
+  })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+
+  let clickCount = 0; // count clicks
+  const btn = document.getElementById("nextBtn");
+
+  btn.addEventListener("click", () => {
+    clickCount++;
+
+    // Trigger ad every 3 clicks
+    if (clickCount % 3 === 0) {
+      if (typeof Monetag !== "undefined" && typeof Monetag.click === "function") {
+        Monetag.click(); // trigger Monetag OnClick ad
+      }
+    }
+
+    nextQuote();
+  });
+});
 </script>
 
 </body>
