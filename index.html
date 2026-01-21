@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Random Quote Generator</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+
+  h1 {
+    margin-top: 20px;
+    font-size: 30px;
+  }
+
+  select, button {
+    background: #222;
+    color: #fff;
+    padding: 12px;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border: none;
+  }
+
+  button {
+    background: #ffca28;
+    color: #000;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #ffb300;
+  }
+
+  .quote-box {
+    background: #222;
+    padding: 24px;
+    border-radius: 12px;
+    margin-top: 25px;
+    min-height: 120px;
+    font-size: 20px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Quote Generator</h1>
+
+  <select id="category">
+    <option value="random">Random (All Quotes)</option>
+    <option value="motivation">Motivation</option>
+    <option value="love">Love</option>
+    <option value="success">Success</option>
+    <option value="life">Life</option>
+    <option value="confidence">Confidence</option>
+  </select>
+
+  <button onclick="nextQuote()">Next Quote</button>
+
+  <div class="quote-box" id="quoteBox">
+    Click “Next Quote” to begin
+  </div>
+</div>
+
+<script>
+/* --------------------------
+   QUOTES DATA
+--------------------------- */
+const QUOTES = {
+  motivation: [],
+  love: [],
+  success: [],
+  life: [],
+  confidence: []
+};
+
+const bases = [
+  "Believe in yourself",
+  "Success starts with discipline",
+  "Never give up",
+  "Your future depends on your actions today",
+  "Great things take time",
+  "Confidence changes everything",
+  "Dream big and act bigger",
+  "Small steps lead to big wins",
+  "Focus creates reality",
+  "Consistency beats talent"
+];
+
+// 200 per category
+Object.keys(QUOTES).forEach(category => {
+  for (let i = 1; i <= 200; i++) {
+    const base = bases[Math.floor(Math.random() * bases.length)];
+    QUOTES[category].push(`${base}. (${category.toUpperCase()} #${i})`);
+  }
+});
+
+/* --------------------------
+   NEXT QUOTE
+--------------------------- */
+function nextQuote() {
+  const category = document.getElementById("category").value;
+  let list = [];
+
+  if (category === "random") {
+    Object.values(QUOTES).forEach(arr => list = list.concat(arr));
+  } else {
+    list = QUOTES[category];
+  }
+
+  const randomIndex = Math.floor(Math.random() * list.length);
+  document.getElementById("quoteBox").innerText = list[randomIndex];
+}
+</script>
+
+</body>
+</html>
