@@ -106,11 +106,7 @@ button:hover {
       if (typeof showBannerAd === "function") {
         showBannerAd();
       }
-    </script>
-  </div>
-</div>
-
-<script>
+    <script>
 /* -------------------------
    QUOTES DATA
 -------------------------- */
@@ -143,10 +139,21 @@ Object.keys(QUOTES).forEach(cat => {
 });
 
 /* -------------------------
-   AD REWARD SYSTEM
+   REWARD SYSTEM
 -------------------------- */
 let quoteCount = 0;
 const FREE_LIMIT = 5;
+
+/* 🔹 PRELOAD REWARDED AD */
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof loadRewardedAd === "function") {
+    loadRewardedAd();
+  }
+
+  if (typeof showBannerAd === "function") {
+    showBannerAd();
+  }
+});
 
 function handleQuote() {
   if (quoteCount >= FREE_LIMIT) {
@@ -180,21 +187,31 @@ function nextQuote() {
 }
 
 /* -------------------------
-   REWARDED AD
+   REWARDED AD (IMPORTANT)
 -------------------------- */
 function showRewardAd() {
   if (typeof showRewardedAd === "function") {
     showRewardedAd();
+  } else {
+    alert("Ad not ready. Please try again.");
   }
 }
 
-/* AP Creator calls this after reward */
-function onRewardEarned() {
+/* ✅ AP CREATOR OFFICIAL CALLBACK */
+function onRewardedAdCompleted() {
   quoteCount = 0;
   document.getElementById("lockBox").style.display = "none";
+
+  // Preload next rewarded ad
+  if (typeof loadRewardedAd === "function") {
+    loadRewardedAd();
+  }
+
   alert("🎉 Reward unlocked! Enjoy more quotes.");
 }
 </script>
 
+
 </body>
 </html>
+
