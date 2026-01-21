@@ -46,7 +46,7 @@ button {
 }
 
 button:disabled {
-  background:#888;
+  background:#777;
   cursor:not-allowed;
 }
 
@@ -94,10 +94,8 @@ button:disabled {
   </div>
 
   <div class="lock-box" id="lockBox">
-    <p id="rewardText">⏳ Loading ad…</p>
-    <button id="rewardBtn" onclick="showRewardAd()" disabled>
-      Watch Ad to Unlock
-    </button>
+    <p>🔒 Quotes locked</p>
+    <button onclick="showRewardAd()">Watch Ad to Unlock</button>
   </div>
 
   <div class="banner-holder"></div>
@@ -108,7 +106,11 @@ button:disabled {
    QUOTES DATA
 -------------------------- */
 const QUOTES = {
-  motivation: [], love: [], success: [], life: [], confidence: []
+  motivation: [],
+  love: [],
+  success: [],
+  life: [],
+  confidence: []
 };
 
 const bases = [
@@ -136,35 +138,13 @@ Object.keys(QUOTES).forEach(cat => {
 -------------------------- */
 let quoteCount = 0;
 const FREE_LIMIT = 5;
-let rewardReady = false;
 
-/* 🔹 LOAD ADS ON START */
+/* LOAD BANNER ON START */
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof showBannerAd === "function") showBannerAd();
-  preloadReward();
 });
 
-/* 🔹 PRELOAD WITH RETRY */
-function preloadReward() {
-  rewardReady = false;
-  document.getElementById("rewardBtn").disabled = true;
-  document.getElementById("rewardText").innerText = "⏳ Loading ad…";
-
-  if (typeof loadRewardedAd === "function") {
-    loadRewardedAd();
-  }
-
-  // Safety timeout (networks can be slow)
-  setTimeout(() => {
-    rewardReady = true;
-    document.getElementById("rewardBtn").disabled = false;
-    document.getElementById("rewardText").innerText = "🎁 Watch ad to unlock quotes";
-  }, 8000);
-}
-
-/* -------------------------
-   MAIN LOGIC
--------------------------- */
+/* MAIN LOGIC */
 function handleQuote() {
   if (quoteCount >= FREE_LIMIT) {
     document.getElementById("lockBox").style.display = "block";
@@ -194,21 +174,40 @@ function nextQuote() {
 }
 
 /* -------------------------
-   REWARDED AD
+   UNIVERSAL REWARDED AD CALL
 -------------------------- */
 function showRewardAd() {
-  if (!rewardReady) return;
 
   if (typeof showRewardedAd === "function") {
-    showRewardedAd();
+    showRewardedAd(); return;
   }
+  if (typeof showRewardAd === "function") {
+    showRewardAd(); return;
+  }
+  if (typeof showRewardVideo === "function") {
+    showRewardVideo(); return;
+  }
+  if (typeof showVideoAd === "function") {
+    showVideoAd(); return;
+  }
+  if (typeof openRewardedAd === "function") {
+    openRewardedAd(); return;
+  }
+
+  alert("❌ Rewarded ad not available. Check AP Creator settings.");
 }
 
-/* ✅ OFFICIAL AP CREATOR CALLBACK */
-function onRewardedAdCompleted() {
+/* -------------------------
+   UNIVERSAL REWARD CALLBACKS
+-------------------------- */
+function onRewardedAdCompleted() { rewardSuccess(); }
+function onRewardAdCompleted() { rewardSuccess(); }
+function onRewardEarned() { rewardSuccess(); }
+function onVideoAdCompleted() { rewardSuccess(); }
+
+function rewardSuccess() {
   quoteCount = 0;
   document.getElementById("lockBox").style.display = "none";
-  preloadReward();
   alert("🎉 Reward unlocked! Enjoy more quotes.");
 }
 </script>
