@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="monetag" content="9367b5d2f72a865b2106d28b420e8ed7">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Quote Generator</title>
@@ -57,10 +58,6 @@ button:hover {
   font-size: 20px;
   line-height: 1.4;
 }
-
-.banner-holder {
-  margin-top: 25px;
-}
 </style>
 </head>
 
@@ -83,15 +80,9 @@ button:hover {
   <div class="quote-box" id="quoteBox">
     Click “Next Quote” to begin
   </div>
-
-  <!-- Banner Ad (AP Creator handles it) -->
-  <div class="banner-holder"></div>
 </div>
 
 <script>
-/* --------------------------
-   QUOTES DATA
---------------------------- */
 const QUOTES = {
   motivation: [],
   love: [],
@@ -113,7 +104,6 @@ const bases = [
   "Consistency beats talent"
 ];
 
-// 200 quotes per category
 Object.keys(QUOTES).forEach(category => {
   for (let i = 1; i <= 200; i++) {
     const base = bases[Math.floor(Math.random() * bases.length)];
@@ -121,9 +111,6 @@ Object.keys(QUOTES).forEach(category => {
   }
 });
 
-/* --------------------------
-   NEXT QUOTE
---------------------------- */
 function nextQuote() {
   const category = document.getElementById("category").value;
   let list = [];
@@ -137,15 +124,6 @@ function nextQuote() {
   const randomIndex = Math.floor(Math.random() * list.length);
   document.getElementById("quoteBox").innerText = list[randomIndex];
 }
-
-/* --------------------------
-   BANNER AD LOAD (AP CREATOR)
---------------------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof showBannerAd === "function") {
-    showBannerAd();
-  }
-});
 </script>
 
 </body>
