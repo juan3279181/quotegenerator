@@ -100,13 +100,10 @@ button:hover {
   </div>
 
   <!-- Banner Ad -->
-  <div class="banner-holder">
-    <script>
-      // AP Creator banner call
-      if (typeof showBannerAd === "function") {
-        showBannerAd();
-      }
-    <script>
+  <div class="banner-holder"></div>
+</div>
+
+<script>
 /* -------------------------
    QUOTES DATA
 -------------------------- */
@@ -131,6 +128,7 @@ const bases = [
   "Consistency beats talent"
 ];
 
+// 200 quotes per category
 Object.keys(QUOTES).forEach(cat => {
   for (let i = 1; i <= 200; i++) {
     const base = bases[Math.floor(Math.random() * bases.length)];
@@ -139,22 +137,25 @@ Object.keys(QUOTES).forEach(cat => {
 });
 
 /* -------------------------
-   REWARD SYSTEM
+   AD + REWARD SYSTEM
 -------------------------- */
 let quoteCount = 0;
 const FREE_LIMIT = 5;
 
-/* 🔹 PRELOAD REWARDED AD */
+/* 🔹 LOAD ADS ON START */
 document.addEventListener("DOMContentLoaded", () => {
-  if (typeof loadRewardedAd === "function") {
-    loadRewardedAd();
-  }
-
   if (typeof showBannerAd === "function") {
     showBannerAd();
   }
+
+  if (typeof loadRewardedAd === "function") {
+    loadRewardedAd();
+  }
 });
 
+/* -------------------------
+   MAIN LOGIC
+-------------------------- */
 function handleQuote() {
   if (quoteCount >= FREE_LIMIT) {
     document.getElementById("lockBox").style.display = "block";
@@ -187,17 +188,17 @@ function nextQuote() {
 }
 
 /* -------------------------
-   REWARDED AD (IMPORTANT)
+   REWARDED AD
 -------------------------- */
 function showRewardAd() {
   if (typeof showRewardedAd === "function") {
     showRewardedAd();
   } else {
-    alert("Ad not ready. Please try again.");
+    alert("Ad not ready yet. Please try again.");
   }
 }
 
-/* ✅ AP CREATOR OFFICIAL CALLBACK */
+/* 🔥 AP CREATOR REWARD CALLBACK */
 function onRewardedAdCompleted() {
   quoteCount = 0;
   document.getElementById("lockBox").style.display = "none";
@@ -211,7 +212,5 @@ function onRewardedAdCompleted() {
 }
 </script>
 
-
 </body>
 </html>
-
