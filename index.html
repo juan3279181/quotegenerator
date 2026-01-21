@@ -22,7 +22,6 @@ body {
 
 h1 {
   font-size:28px;
-  margin-bottom:10px;
 }
 
 select, button {
@@ -46,8 +45,9 @@ button {
   cursor:pointer;
 }
 
-button:hover {
-  background:#ffb300;
+button:disabled {
+  background:#888;
+  cursor:not-allowed;
 }
 
 .quote-box {
@@ -93,13 +93,13 @@ button:hover {
     Tap "Next Quote" to begin
   </div>
 
-  <!-- Reward Lock -->
   <div class="lock-box" id="lockBox">
-    <p>🔒 Quotes locked</p>
-    <button onclick="showRewardAd()">Watch Ad to Unlock</button>
+    <p id="rewardText">⏳ Loading ad…</p>
+    <button id="rewardBtn" onclick="showRewardAd()" disabled>
+      Watch Ad to Unlock
+    </button>
   </div>
 
-  <!-- Banner Ad -->
   <div class="banner-holder"></div>
 </div>
 
@@ -108,11 +108,7 @@ button:hover {
    QUOTES DATA
 -------------------------- */
 const QUOTES = {
-  motivation: [],
-  love: [],
-  success: [],
-  life: [],
-  confidence: []
+  motivation: [], love: [], success: [], life: [], confidence: []
 };
 
 const bases = [
@@ -128,7 +124,6 @@ const bases = [
   "Consistency beats talent"
 ];
 
-// 200 quotes per category
 Object.keys(QUOTES).forEach(cat => {
   for (let i = 1; i <= 200; i++) {
     const base = bases[Math.floor(Math.random() * bases.length)];
@@ -141,17 +136,31 @@ Object.keys(QUOTES).forEach(cat => {
 -------------------------- */
 let quoteCount = 0;
 const FREE_LIMIT = 5;
+let rewardReady = false;
 
 /* 🔹 LOAD ADS ON START */
 document.addEventListener("DOMContentLoaded", () => {
-  if (typeof showBannerAd === "function") {
-    showBannerAd();
-  }
+  if (typeof showBannerAd === "function") showBannerAd();
+  preloadReward();
+});
+
+/* 🔹 PRELOAD WITH RETRY */
+function preloadReward() {
+  rewardReady = false;
+  document.getElementById("rewardBtn").disabled = true;
+  document.getElementById("rewardText").innerText = "⏳ Loading ad…";
 
   if (typeof loadRewardedAd === "function") {
     loadRewardedAd();
   }
-});
+
+  // Safety timeout (networks can be slow)
+  setTimeout(() => {
+    rewardReady = true;
+    document.getElementById("rewardBtn").disabled = false;
+    document.getElementById("rewardText").innerText = "🎁 Watch ad to unlock quotes";
+  }, 8000);
+}
 
 /* -------------------------
    MAIN LOGIC
@@ -165,11 +174,8 @@ function handleQuote() {
   nextQuote();
   quoteCount++;
 
-  // Interstitial every 3 quotes
-  if (quoteCount % 3 === 0) {
-    if (typeof showInterstitialAd === "function") {
-      showInterstitialAd();
-    }
+  if (quoteCount % 3 === 0 && typeof showInterstitialAd === "function") {
+    showInterstitialAd();
   }
 }
 
@@ -183,31 +189,26 @@ function nextQuote() {
     list = QUOTES[cat];
   }
 
-  const q = list[Math.floor(Math.random() * list.length)];
-  document.getElementById("quoteBox").innerText = q;
+  document.getElementById("quoteBox").innerText =
+    list[Math.floor(Math.random() * list.length)];
 }
 
 /* -------------------------
    REWARDED AD
 -------------------------- */
 function showRewardAd() {
+  if (!rewardReady) return;
+
   if (typeof showRewardedAd === "function") {
     showRewardedAd();
-  } else {
-    alert("Ad not ready yet. Please try again.");
   }
 }
 
-/* 🔥 AP CREATOR REWARD CALLBACK */
+/* ✅ OFFICIAL AP CREATOR CALLBACK */
 function onRewardedAdCompleted() {
   quoteCount = 0;
   document.getElementById("lockBox").style.display = "none";
-
-  // Preload next rewarded ad
-  if (typeof loadRewardedAd === "function") {
-    loadRewardedAd();
-  }
-
+  preloadReward();
   alert("🎉 Reward unlocked! Enjoy more quotes.");
 }
 </script>
