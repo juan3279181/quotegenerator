@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>(function(s){s.dataset.zone='10498787',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Quote Generator</title>
 
 <style>
-/* Base styles */
 body {
   font-family: Arial, sans-serif;
   background: #111;
@@ -17,7 +15,6 @@ body {
   text-align: center;
 }
 
-/* Container */
 .container {
   max-width: 600px;
   margin: auto;
@@ -25,13 +22,11 @@ body {
   box-sizing: border-box;
 }
 
-/* Heading */
 h1 {
   margin-top: 20px;
   font-size: 2rem;
 }
 
-/* Select and button styling */
 select, button {
   background: #222;
   color: #fff;
@@ -56,7 +51,6 @@ button:hover {
   background: #ffb300;
 }
 
-/* Quote box */
 .quote-box {
   background: #222;
   padding: 20px;
@@ -68,22 +62,10 @@ button:hover {
   word-wrap: break-word;
 }
 
-/* Mobile optimization */
 @media (max-width: 480px) {
-  h1 {
-    font-size: 1.6rem;
-  }
-  
-  select, button {
-    font-size: 1rem;
-    padding: 10px;
-  }
-
-  .quote-box {
-    font-size: 1rem;
-    padding: 16px;
-    min-height: 100px;
-  }
+  h1 { font-size: 1.6rem; }
+  select, button { font-size: 1rem; padding: 10px; }
+  .quote-box { font-size: 1rem; padding: 16px; min-height: 100px; }
 }
 </style>
 </head>
@@ -128,11 +110,17 @@ const bases = [
   "Dream big and act bigger",
   "Small steps lead to big wins",
   "Focus creates reality",
-  "Consistency beats talent"
+  "Consistency beats talent",
+  "Action beats excuses",
+  "Hard work creates opportunity",
+  "Growth begins outside your comfort zone",
+  "Energy flows where focus goes",
+  "Your mindset determines your future"
 ];
 
+// Generate 5,000 quotes total (1,000 per category)
 Object.keys(QUOTES).forEach(category => {
-  for (let i = 1; i <= 200; i++) {
+  for (let i = 1; i <= 1000; i++) {
     const base = bases[Math.floor(Math.random() * bases.length)];
     QUOTES[category].push(`${base}. (${category.toUpperCase()} #${i})`);
   }
@@ -152,32 +140,8 @@ function nextQuote() {
   document.getElementById("quoteBox").innerText = list[randomIndex];
 }
 
-/* Monetag OnClick Ad (Every 3 Clicks Predictable) */
-document.addEventListener("DOMContentLoaded", () => {
-  // Inject Monetag script
-  (function(s){
-    s.dataset.zone='10498787';
-    s.src='https://al5sm.com/tag.min.js';
-  })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-
-  let clickCount = 0; // count clicks
-  const btn = document.getElementById("nextBtn");
-
-  btn.addEventListener("click", () => {
-    clickCount++;
-
-    // Trigger ad every 3 clicks
-    if (clickCount % 3 === 0) {
-      if (typeof Monetag !== "undefined" && typeof Monetag.click === "function") {
-        Monetag.click(); // trigger Monetag OnClick ad
-      }
-    }
-
-    nextQuote();
-  });
-});
+document.getElementById("nextBtn").addEventListener("click", nextQuote);
 </script>
 
 </body>
 </html>
-
